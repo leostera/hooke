@@ -45,7 +45,6 @@ type t
 
 val identity : t
 
-
 val make : delta_time:float -> angular_freq:float -> damping_ratio:float -> t
 (** [Spring.make ~delta_time ~angular_freq ~damping_ratio] creates a new
     spring that follows these parameters.
@@ -58,10 +57,8 @@ val make : delta_time:float -> angular_freq:float -> damping_ratio:float -> t
 
 *)
 
-
 type snapshot = { position : float; velocity : float }
 (** A [snapshot] is a utility type representing a spring at a particular point in time. *)
 
 val zero_snapshot : snapshot
-
 val update : t -> snapshot -> target_pos:float -> snapshot

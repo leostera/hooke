@@ -7,8 +7,9 @@ type t = {
   vel_vel_coef : float;
 }
 
-type snapshot = { position: float; velocity: float }
-let zero_snapshot = {position=0.;velocity=0.}
+type snapshot = { position : float; velocity : float }
+
+let zero_snapshot = { position = 0.; velocity = 0. }
 
 let identity =
   { pos_pos_coef = 1.; pos_vel_coef = 0.; vel_pos_coef = 0.; vel_vel_coef = 1. }
@@ -79,7 +80,7 @@ let make ~delta_time ~angular_freq ~damping_ratio =
   let damping_ratio = Float.max 0. damping_ratio in
 
   if angular_freq < epsilon then identity
-  else if damping_ratio > (1. +. epsilon) then
+  else if damping_ratio > 1. +. epsilon then
     make_overdamped ~delta_time ~angular_freq ~damping_ratio
   else if damping_ratio < 1. -. epsilon then
     make_underdamped ~delta_time ~angular_freq ~damping_ratio
@@ -95,6 +96,8 @@ let update spring snapshot ~target_pos =
     +. (old_vel *. spring.pos_vel_coef)
     +. target_pos
   in
-  let velocity = (old_pos *. spring.vel_pos_coef) +. (old_vel *. spring.vel_vel_coef) in
+  let velocity =
+    (old_pos *. spring.vel_pos_coef) +. (old_vel *. spring.vel_vel_coef)
+  in
 
-  {position; velocity}
+  { position; velocity }
