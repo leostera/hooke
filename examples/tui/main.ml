@@ -3,29 +3,31 @@
 open Minttea
 open Hooke
 
-type model = { spring : Spring.t; snapshot : Spring.snapshot }
+type model = { spring : Spring.t; snapshot : Spring.snapshot; running : bool }
 
-let init _ = Command.Noop
+let init _ = Command.Set_timer (Riot.Ref.make (), 1.0)
 
 let initial_model () =
   {
-    spring = Spring.make ~delta_time:0.02 ~angular_freq:7. ~damping_ratio:0.30;
+    spring =
+      Spring.make ~delta_time:(30. /. 1_000.) ~angular_freq:7.
+        ~damping_ratio:0.15;
     snapshot = Spring.zero_snapshot;
+    running = false;
   }
 
 let update event model =
   match event with
   | Event.KeyDown "q" -> (model, Command.Quit)
-  | Event.Frame ->
-      let equilibrium_pos = 30. in
-      let snapshot =
-        Spring.update model.spring model.snapshot ~equilibrium_pos
-      in
+  | Event.Timer _ -> ({ model with running = true }, Command.Noop)
+  | Event.Frame when model.running ->
+      let target_pos = 30. in
+      let snapshot = Spring.update model.spring model.snapshot ~target_pos in
       ({ model with snapshot }, Command.Noop)
   | _ -> (model, Command.Noop)
 
 let view model =
-  let x = Float.to_int (Float.ceil model.snapshot.position) in
+  let x = Float.to_int (Float.round model.snapshot.position) in
   if x < 0 then ""
   else
     let padding = String.make x ' ' in

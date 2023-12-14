@@ -2,6 +2,7 @@ Output demo.gif
 
 Require echo
 
+Set Framerate 25
 Set Shell "bash"
 Set FontSize 24
 Set Width 1200
